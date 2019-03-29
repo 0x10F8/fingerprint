@@ -45,6 +45,10 @@ def lambda_handler(event, context):
         'WebGLRenderer': web_gl_renderer
     }
 
+    for key, _ in collected_information.items():
+        if collected_information[key] == '':
+            collected_information[key] = 'undefined'
+
     # Create a hash with the information
     m = hashlib.sha256()
     m.update(accept.encode('utf8'))
