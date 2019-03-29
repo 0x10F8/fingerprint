@@ -1,0 +1,89 @@
+<html>
+    <head>
+        <title>Fingerprint</title>
+    </head>
+    <body>
+        <pre id="resp"></pre>
+        <script>
+
+            const endpoint = "https://r1yxqzq3w4.execute-api.us-east-1.amazonaws.com/Test/";
+
+
+            function sendToServer(data) {
+                var xhttp = new XMLHttpRequest();
+                xhttp.open("POST", endpoint, true);
+                xhttp.setRequestHeader("Content-Type", "application/json");
+                xhttp.send(JSON.stringify(data));
+                xhttp.onreadystatechange = function() {
+                    output = document.getElementById('resp');
+                    output.innerText = xhttp.responseText;
+                }
+            }
+
+            function getBase64ImageData() {
+                canvas = document.createElement("canvas");
+                canvas.height = 60;
+                canvas.width = 400;
+                canvasContext = canvas.getContext("2d");
+                canvas.style.display = "inline";
+                canvasContext.textBaseline = "alphabetic";
+                canvasContext.fillStyle = "#f60";
+                canvasContext.fillRect(125, 1, 62, 20);
+                canvasContext.fillStyle = "#069";
+                canvasContext.font = "11pt no-real-font-123";
+                canvasContext.fillText("abcdefghIJKLMNO, \ud83d\ude03", 2, 15);
+                canvasContext.fillStyle = "rgba(102, 204, 0, 0.7)";
+                canvasContext.font = "18pt Arial";
+                canvasContext.fillText("pqrstuvXYZ, \ud83d\ude03", 4, 45);
+                canvasData = canvas.toDataURL();
+                return canvasData;
+            }
+
+            function getWebGLRenderer() {
+                canvas = document.createElement("canvas");
+                var gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+                return "" + renderer;
+            }
+
+            function getPluginsString() {
+                var pluginsArr = window.navigator.plugins;
+                var pluginsString = "";
+                for (var i = 0; i < pluginsArr.length; i++) {
+                    var plugin = pluginsArr[i];
+                    pluginsString = pluginsString + plugin['name'] + ', ';
+                    pluginsString = pluginsString + plugin['filename'] + ', '
+                    pluginsString = pluginsString + plugin['description'] + '; '
+                }
+                return pluginsString;
+            }
+
+            const height = window.screen.height;
+            const width = window.screen.width;
+            const cDepth = window.screen.colorDepth;
+            const resolution = "" + width + "x" + height + "x" + cDepth;
+            const plugins = getPluginsString();
+            const platform = "" + window.navigator.platform;
+            const cookiesEnabled = "" + window.navigator.cookiesEnabled;
+            const doNotTrack = "" + window.navigator.cookiesEnabled;
+            const timezone = "" + new Date().getTimezoneOffset();
+            const imageData = getBase64ImageData();
+            const webGLRenderer = "" + getWebGLRenderer();
+
+            const jsInfo = {
+                "resolution": resolution,
+                "plugins": plugins,
+                "platform": platform,
+                "cookiesEnabled": cookiesEnabled,
+                "doNotTrack": doNotTrack,
+                "timezone": timezone,
+                "webGLRenderer": webGLRenderer,
+                "imageData": imageData
+                }
+            
+            
+            sendToServer(jsInfo);
+        </script>
+    </body>
+</html>
